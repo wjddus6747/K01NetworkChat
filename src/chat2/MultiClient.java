@@ -44,7 +44,7 @@ public class MultiClient
 					}
 					//클라이언트는 내용이 입력후 서버로 전송한다.
 					String s2 = scanner.nextLine();
-					if(s2.equals("q")||s2.equals("Q")) {
+					if(s2.equals("q")||s2.equals("Q")) { 
 						//입력값이 Q(q)이면 while루프 탈출
 						break;
 					}
