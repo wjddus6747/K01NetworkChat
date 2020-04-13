@@ -12,7 +12,7 @@ public class MultiClient
 	{ 
 		System.out.println("이름을 입력하세여:");
 		Scanner scanner = new Scanner(System.in);
-		String s_name = scanner.nextLine();
+		String s_name = scanner.nextLine(); 
 		PrintWriter out = null;
 		BufferedReader in = null;
 		
