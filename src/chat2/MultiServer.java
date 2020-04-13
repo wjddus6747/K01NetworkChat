@@ -16,7 +16,7 @@ public class MultiServer
 		PrintWriter out = null;
 		BufferedReader in = null;
 		String s = ""; //클라이언트의 메세지를 저장 
-		String name = ""; //클라이언트의 이름을 저장
+		String name = ""; //클라이언트의 이름을 저장 
 
 		try
 		{
