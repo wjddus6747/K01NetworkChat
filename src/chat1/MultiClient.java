@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class MultiClient
 {
-	public static void main(String[] args)
+	public static void main(String[] args) 
 	{
 		System.out.println("이름을 입력하세여:");
 		Scanner scanner = new Scanner(System.in);
