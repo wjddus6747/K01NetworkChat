@@ -211,7 +211,7 @@ public class MultiServer
 				while (in != null)
 				{
 					if (s != null)
-					{	
+					{
 						s = in.readLine();
 						s = URLDecoder.decode(s, "UTF-8");
 						System.out.println(name + ">>" + s);
@@ -222,7 +222,7 @@ public class MultiServer
 						}
 						if (s.indexOf("/to") == 0)
 						{
-								secret(name, s);
+							secret(name, s);
 						} else
 						{
 							sendAllmsg(name, s);
