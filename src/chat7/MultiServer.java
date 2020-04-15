@@ -26,6 +26,8 @@ public class MultiServer
 	static Socket socket = null;
 	// 클라이언트 정보저장을 위한 Map컬렉션 정의
 	Map<String, PrintWriter> clientMap;
+	// 귓속말 하는 사람들이 저장된 HashMap
+	HashMap<String, String> SercetMap = new HashMap<>();
 
 	// 생성자
 	public MultiServer()
@@ -158,6 +160,22 @@ public class MultiServer
 		in_out.println(array[1] + "님의 귓속말:" + message);
 	}
 
+	// 귓속말 고정/풀기 기능
+	public void secretlock(String name, String s)
+	{
+		if (SercetMap.containsKey(name) == true)
+		{
+			SercetMap.remove(name);
+		} else if (SercetMap.containsKey(name) == false)
+		{
+			SercetMap.put(name, s);
+		}
+		if (SercetMap.containsKey(name) == true)
+		{
+			secret(name, s);
+		}
+	}
+
 	// 내부클래스
 	class MultiServerT extends Thread
 	{
@@ -208,6 +226,7 @@ public class MultiServer
 				System.out.println("현재 접속자 수는 " + clientMap.size() + "명 입니다.");
 
 				// 입력한 메세지는 모든 클라이언트에게 Echo된다.
+				// 클라이언트로부터 받은 메세지를 읽어 명령어를 분석
 				while (in != null)
 				{
 					if (s != null)
@@ -222,7 +241,20 @@ public class MultiServer
 						}
 						if (s.indexOf("/to") == 0)
 						{
-							secret(name, s);
+							StringTokenizer st = new StringTokenizer(s);
+							String[] arr = new String[st.countTokens()];
+							for (int i = 0; i < arr.length; i++)
+							{
+								arr[i] = st.nextToken();
+							}
+							if (arr.length == 2)
+							{
+								secret(name, s);
+							} else if (arr.length != 2)
+							{
+								secretlock(name, s);
+							}
+
 						} else
 						{
 							sendAllmsg(name, s);
@@ -248,6 +280,7 @@ public class MultiServer
 			} catch (Exception e)
 			{
 				System.out.println("예외:" + e);
+				e.printStackTrace();
 			} finally
 			{ /*
 				 * 클라이언트가 접속을 종료하면 예외가 발생하게 되어 finally로 넘어오게 된다. 이때 "대화명"을 통해 remove()시켜준다.
