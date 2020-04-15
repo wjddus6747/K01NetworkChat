@@ -149,7 +149,7 @@ public class MultiServer
 	// 귓속말
 	public void secret(String name, String s)
 	{
-		StringTokenizer st = new StringTokenizer(s, " ");
+		StringTokenizer st = new StringTokenizer(s, " "); 
 		String[] array = new String[st.countTokens()];
 		for (int i = 0; i < array.length; i++)
 		{
