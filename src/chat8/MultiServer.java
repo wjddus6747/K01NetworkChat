@@ -179,11 +179,6 @@ public class MultiServer
 			SercetMap.put(name, s);
 		}
 	}
-	
-	//블랙리스트 (접속도 불가함)
-	public void blacklist() {
-		
-	}
 
 	// 내부클래스
 	class MultiServerT extends Thread
@@ -222,7 +217,23 @@ public class MultiServer
 				name = in.readLine();
 				// [ 서버 ] 클라이언트에서 올라온 한글 데이터 사용할 때 : UTF-8로 디코딩
 				name = URLDecoder.decode(name, "UTF-8");
-				
+
+				// 블랙리스트 확인
+				stmt = con.createStatement();
+				String blacksql = "select * from blacklist where name like '" + name + "' ";
+				rs = stmt.executeQuery(blacksql);
+				String blackname = null;
+				while (rs.next())
+				{
+					blackname = rs.getString(1);
+				}
+				if (blackname != null)
+				{
+					System.out.println("블랙리스트이므로 접속거부합니다.");
+					socket.close();
+				}
+
+				// name_tb에 있는 이름이 중복되지 않도록 한다.
 				stmt = con.createStatement();
 				String sql = "select * from name_tb where name  like '" + name + "' ";
 				rs = stmt.executeQuery(sql);
@@ -251,17 +262,23 @@ public class MultiServer
 					System.out.println("아이디가 중복되었습니다.");
 					socket.close();
 				}
-				
-				//이름만 넣을 태이블
-				try {
-					stmt = con.createStatement();
-					String sql2 = "insert into name_tb values('"+ name +"')";
-					stmt.executeUpdate(sql2);
-				}
-				catch (Exception e) {
-					System.out.println("sql2에러발생"+ e);
-				}
 
+				//블랙리스트가 아닌 경우에만 name테이블에 이름을 저장시킨다.
+				//이렇게 하지 않으면 블랙리스트이름도 name테이블에 저장이 되기때문
+				if (blackname == null)
+				{
+					// 이름만 넣을 태이블
+					try
+					{
+						stmt = con.createStatement();
+						String sql2 = "insert into name_tb values('" + name + "')";
+						stmt.executeUpdate(sql2);
+					} catch (Exception e)
+					{
+						System.out.println("sql2에러발생" + e);
+					}
+				}
+				
 
 				// 입력한 메세지는 모든 클라이언트에게 Echo된다.
 				// 클라이언트로부터 받은 메세지를 읽어 명령어를 분석
@@ -285,6 +302,7 @@ public class MultiServer
 							{
 								arr[i] = st.nextToken();
 							}
+							//귓속말이 일회용일때
 							if (arr.length >= 3)
 							{
 								secret(name, s);
@@ -321,7 +339,7 @@ public class MultiServer
 			} catch (Exception e)
 			{
 				System.out.println("예외:" + e);
-				//e.printStackTrace();
+				// e.printStackTrace();
 			} finally
 			{ /*
 				 * 클라이언트가 접속을 종료하면 예외가 발생하게 되어 finally로 넘어오게 된다. 이때 "대화명"을 통해 remove()시켜준다.
