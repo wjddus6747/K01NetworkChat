@@ -30,6 +30,8 @@ public class MultiServer
 	Map<String, PrintWriter> clientMap;
 	// 귓속말 하는 사람들이 저장된 HashMap
 	HashMap<String, String> SercetMap = new HashMap<>();
+	//대화차단 사람들
+	HashMap<String, String> CutMap = new HashMap<>();
 
 	// 생성자
 	public MultiServer()
@@ -180,6 +182,12 @@ public class MultiServer
 		}
 	}
 
+	// 대화상대 차단기능
+	public void cutname()
+	{
+
+	}
+
 	// 내부클래스
 	class MultiServerT extends Thread
 	{
@@ -263,8 +271,8 @@ public class MultiServer
 					socket.close();
 				}
 
-				//블랙리스트가 아닌 경우에만 name테이블에 이름을 저장시킨다.
-				//이렇게 하지 않으면 블랙리스트이름도 name테이블에 저장이 되기때문
+				// 블랙리스트가 아닌 경우에만 name테이블에 이름을 저장시킨다.
+				// 이렇게 하지 않으면 블랙리스트이름도 name테이블에 저장이 되기때문
 				if (blackname == null)
 				{
 					// 이름만 넣을 태이블
@@ -278,7 +286,6 @@ public class MultiServer
 						System.out.println("sql2에러발생" + e);
 					}
 				}
-				
 
 				// 입력한 메세지는 모든 클라이언트에게 Echo된다.
 				// 클라이언트로부터 받은 메세지를 읽어 명령어를 분석
@@ -302,7 +309,7 @@ public class MultiServer
 							{
 								arr[i] = st.nextToken();
 							}
-							//귓속말이 일회용일때
+							// 귓속말이 일회용일때
 							if (arr.length >= 3)
 							{
 								secret(name, s);
@@ -317,6 +324,16 @@ public class MultiServer
 						} else
 						{
 							sendAllmsg(name, s);
+						}
+						// 대화상대 차단 명령어
+						if (s.indexOf("/cut") == 0)
+						{
+							StringTokenizer st = new StringTokenizer(s);
+							String[] cutarr = new String[st.countTokens()];
+							for (int i = 0; i < cutarr.length; i++)
+							{
+								cutarr[i] = st.nextToken();
+							}
 						}
 					}
 					if (s == null)
