@@ -1,4 +1,4 @@
-package chat7;
+package chat8;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -179,6 +179,11 @@ public class MultiServer
 			SercetMap.put(name, s);
 		}
 	}
+	
+	//블랙리스트 (접속도 불가함)
+	public void blacklist() {
+		
+	}
 
 	// 내부클래스
 	class MultiServerT extends Thread
@@ -217,9 +222,9 @@ public class MultiServer
 				name = in.readLine();
 				// [ 서버 ] 클라이언트에서 올라온 한글 데이터 사용할 때 : UTF-8로 디코딩
 				name = URLDecoder.decode(name, "UTF-8");
-
+				
 				stmt = con.createStatement();
-				String sql = "select * from chating_tb where name  like '" + name + "' ";
+				String sql = "select * from name_tb where name  like '" + name + "' ";
 				rs = stmt.executeQuery(sql);
 				String _name = null;
 				while (rs.next())
@@ -246,18 +251,17 @@ public class MultiServer
 					System.out.println("아이디가 중복되었습니다.");
 					socket.close();
 				}
+				
+				//이름만 넣을 태이블
+				try {
+					stmt = con.createStatement();
+					String sql2 = "insert into name_tb values('"+ name +"')";
+					stmt.executeUpdate(sql2);
+				}
+				catch (Exception e) {
+					System.out.println("sql2에러발생"+ e);
+				}
 
-				// 이름만 넣는 테이블 하나 생성(DB연동)
-//				try
-//				{
-//					stmt = con.createStatement();
-//					String sql = "insert into name_tb values('" + name + "')";
-//					stmt.executeUpdate(sql);
-//				} catch (Exception e)
-//				{
-//					System.out.println("sql실행문제");
-//					e.printStackTrace();
-//				}
 
 				// 입력한 메세지는 모든 클라이언트에게 Echo된다.
 				// 클라이언트로부터 받은 메세지를 읽어 명령어를 분석
@@ -314,12 +318,10 @@ public class MultiServer
 						e.printStackTrace();
 					}
 				}
-			} catch (
-
-			Exception e)
+			} catch (Exception e)
 			{
 				System.out.println("예외:" + e);
-				e.printStackTrace();
+				//e.printStackTrace();
 			} finally
 			{ /*
 				 * 클라이언트가 접속을 종료하면 예외가 발생하게 되어 finally로 넘어오게 된다. 이때 "대화명"을 통해 remove()시켜준다.

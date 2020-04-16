@@ -1,12 +1,10 @@
-package chat7;
+package chat8;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.URLDecoder;
-import java.sql.ResultSet;
-import java.util.Scanner;
 
 public class Receiver extends Thread
 {
@@ -43,6 +41,7 @@ public class Receiver extends Thread
 			} catch (Exception e)
 			{
 				System.out.println("예외>Receiver>run1: : " + e);
+				break;
 			}
 		}
 		try
