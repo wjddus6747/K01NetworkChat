@@ -314,9 +314,7 @@ public class MultiServer
 						e.printStackTrace();
 					}
 				}
-			} catch (
-
-			Exception e)
+			} catch (Exception e)
 			{
 				System.out.println("예외:" + e);
 				e.printStackTrace();

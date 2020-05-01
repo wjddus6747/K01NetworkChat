@@ -5,10 +5,18 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class MultiServer
 {
 
+	protected static Connection con;
+	protected static Statement stmt;
+	protected ResultSet rs;
+	
 	public static void main(String[] args)
 	{
 		ServerSocket serverSocket = null;
@@ -20,6 +28,17 @@ public class MultiServer
 
 		try
 		{
+			// DB연결
+			try
+			{
+			Class.forName("oracle.jdbc.OracleDriver");
+			con = DriverManager.getConnection("jdbc:oracle:thin://@localhost:1521:orcl", "kosmo", "1234");
+			System.out.println("오라클 DB연결성공");
+			} catch (Exception e)
+			{
+			System.out.println("DB연결실패");
+			e.printStackTrace();
+			}
 			serverSocket = new ServerSocket(9999);
 			System.out.println("서버가 시작되었습니다.");
 
@@ -49,6 +68,19 @@ public class MultiServer
 				}
 				System.out.println(name+"==>"+ s);
 				out.println(">" + name + "==>"+s);
+				// JDBC
+				try
+				{
+					stmt = con.createStatement();
+					String query = "INSERT INTO chating_tb VALUES(seq_chat.nextval, '" + name + "', '" + s
+							+ "', sysdate)";
+
+					stmt.executeUpdate(query);
+				} catch (Exception e)
+				{
+					System.out.println("쿼리 실행문제");
+					e.printStackTrace();
+				}
 			}
 			System.out.println("Bye...!!");
 		} catch (Exception e)
